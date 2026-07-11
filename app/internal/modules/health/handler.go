@@ -3,7 +3,7 @@ package health
 import (
 	"net/http"
 
-	"github.com/mzeahmed/go-booking/internal/response"
+	"github.com/mzeahmed/gobooking/internal/response"
 )
 
 type Response struct {
