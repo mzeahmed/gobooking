@@ -1,0 +1,98 @@
+services:
+  traefik:
+    image: traefik:v3.4
+    container_name: go-bookingapp_traefik
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./certs:/certs
+    networks:
+      - frontend
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: go-bookingapp_app
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_USER: bookingapp
+      DB_PASSWORD: bookingapp
+      DB_NAME: bookingapp
+      DB_SSLMODE: disable
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: on-failure
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.go-bookingapp.rule=Host(`api.go-bookingapp.local`)
+      - traefik.http.routers.go-bookingapp.entrypoints=web,websecure
+      - traefik.http.routers.go-bookingapp.tls=true
+      - traefik.http.services.go-bookingapp.loadbalancer.server.port=8080
+    networks:
+      - frontend
+      - application
+      - database
+
+  database:
+    image: postgres:16-alpine
+    container_name: go-bookingapp_database
+    environment:
+      POSTGRES_DB: bookingapp
+      POSTGRES_USER: bookingapp
+      POSTGRES_PASSWORD: bookingapp
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bookingapp -d bookingapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - database
+
+  adminer:
+    image: adminer:latest
+    container_name: go-bookingapp_adminer
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.adminer.rule=Host(`db.go-bookingapp.local`)
+      - traefik.http.routers.adminer.entrypoints=websecure
+      - traefik.http.routers.adminer.tls=true
+      - traefik.http.services.adminer.loadbalancer.server.port=8080
+    networks:
+      - frontend
+      - database
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: go-bookingapp_mailpit
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mailpit.rule=Host(`mail.go-bookingapp.local`)
+      - traefik.http.services.mailpit.loadbalancer.server.port=8025
+    networks:
+      - frontend
+
+volumes:
+  postgres_data:
+
+networks:
+  frontend:
+  application:
+  database:

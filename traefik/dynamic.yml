@@ -1,0 +1,45 @@
+http:
+  routers:
+    app:
+      rule: Host(`api.go-bookingapp.local`)
+      entryPoints:
+        - web
+        - websecure
+      service: app
+      tls: { }
+
+    mailpit:
+      rule: Host(`mail.go-bookingapp.local`)
+      entryPoints:
+        - web
+        - websecure
+      service: mailpit
+      tls: { }
+
+    adminer:
+      rule: Host(`db.go-bookingapp.local`)
+      entryPoints:
+        - websecure
+      service: adminer
+      tls: { }
+
+  services:
+    app:
+      loadBalancer:
+        servers:
+          - url: http://app:8080
+
+    mailpit:
+      loadBalancer:
+        servers:
+          - url: http://mailpit:8025
+
+    adminer:
+      loadBalancer:
+        servers:
+          - url: http://adminer:8080
+
+tls:
+  certificates:
+    - certFile: /certs/go-bookingapp.local.pem
+      keyFile: /certs/go-bookingapp.local-key.pem
