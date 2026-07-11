@@ -1,13 +1,15 @@
 // Package config loads and validates the application configuration.
 //
 // Configuration is loaded from environment variables.
-// During development, variables are read from the .env file.
+// During development, variables are read from the repo root's .env file.
 // In production, values are expected to be provided by the operating system.
 package config
 
 import (
 	"log"
 	"os"
+	"path/filepath"
+	"runtime"
 
 	"github.com/joho/godotenv"
 )
@@ -31,7 +33,7 @@ type Config struct {
 // If a .env file exists, it is loaded automatically.
 // Missing variables are replaced with sensible defaults when possible.
 func Load() Config {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(envPath()); err != nil {
 		log.Println(".env file not found, using system environment variables")
 	}
 
@@ -47,6 +49,15 @@ func Load() Config {
 
 		JWTSecret: getEnv("JWT_SECRET", "change-me"),
 	}
+}
+
+// envPath returns the absolute path to the repo root's .env file, resolved
+// relative to this source file rather than the process's working
+// directory. This ensures the correct file is loaded regardless of
+// where the binary is run from (go run, air, or a Docker container).
+func envPath() string {
+	_, thisFile, _, _ := runtime.Caller(0)
+	return filepath.Join(filepath.Dir(thisFile), "..", "..", "..", ".env")
 }
 
 // getEnv returns the environment variable value if present.

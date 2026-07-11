@@ -20,7 +20,14 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: gobooking_app
+    volumes:
+      - .:/workspace
+      - go_mod_cache:/go/pkg/mod
+      - go_build_cache:/root/.cache/go-build
+      - /workspace/tmp
+      - /workspace/app/bin
     environment:
+      APP_PORT: 8080
       DB_HOST: database
       DB_PORT: 5432
       DB_USER: gobooking
@@ -91,6 +98,8 @@ services:
 
 volumes:
   postgres_data:
+  go_mod_cache:
+  go_build_cache:
 
 networks:
   frontend:

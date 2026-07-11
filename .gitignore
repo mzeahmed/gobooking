@@ -3,4 +3,6 @@
 app/bin/
 certs/*.pem
 
-app/.env
+tmp/
+
+.env

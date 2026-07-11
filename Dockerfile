@@ -1,17 +1,18 @@
-FROM golang:1.26 AS build
+FROM golang:1.26
 
-WORKDIR /src
+WORKDIR /workspace
 
-COPY app/go.mod app/go.sum ./
-RUN go mod download
+# Install air for hot reloading
+RUN go install github.com/air-verse/air@latest
 
-COPY app/ .
-RUN CGO_ENABLED=0 go build -o /out/bookingapp ./cmd/api
+# Cache go module downloads in their own layer
+COPY app/go.mod app/go.sum ./app/
+RUN cd app && go mod download
 
-FROM alpine:3.20
-
-COPY --from=build /out/bookingapp /bookingapp
+# Source code is bind-mounted by docker-compose for hot reload during
+# development; it's copied here too so the image stays runnable on its own.
+COPY . .
 
 EXPOSE 8080
 
-CMD ["/bookingapp"]
+CMD ["air"]

@@ -126,7 +126,7 @@ certs: hosts ## Generate local TLS certificates if missing (requires mkcert)
 		echo "$(GREEN)Certificates generated in certs/$(RESET)"; \
 	fi
 
-up: certs ## Build and start the containers
+up: certs ## Build and start the containers (app hot-reloads via air inside Docker)
 	@echo "$(YELLOW)Starting containers...$(RESET)"
 	$(COMPOSE) up -d --build
 	@echo "$(GREEN)Containers started$(RESET)"
