@@ -1,4 +1,4 @@
-# go-bookingapp
+# go-booking
 
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go&logoColor=white)](go.mod)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
@@ -8,7 +8,7 @@
 A room and workspace booking platform, written in Go.
 
 This project is a from-scratch Go rewrite of the
-[Symfony BookingApp](../www/bookingapp), reusing the same domain and data
+[Symfony BookingApp](https://github.com/mzeahmed/bookingapp), reusing the same domain and data
 model, but idiomatic to Go: no ORM magic, explicit SQL, small interfaces,
 standard library first.
 
@@ -91,9 +91,9 @@ project.
 Available domains:
 
 ```text
-https://api.go-bookingapp.local
-https://mail.go-bookingapp.local
-https://db.go-bookingapp.local
+https://api.go-booking.local
+https://mail.go-booking.local
+https://db.go-booking.local
 ```
 
 Traefik sits in front of the stack as a reverse proxy. It:
@@ -101,14 +101,14 @@ Traefik sits in front of the stack as a reverse proxy. It:
 * Terminates HTTPS using local certificates generated with mkcert.
 * Redirects all HTTP traffic to HTTPS.
 * Routes each domain to the right container based on Host rules declared
-  in `traefik/dynamic.yml` (e.g. `api.go-bookingapp.local` -> app,
-  `mail.go-bookingapp.local` -> Mailpit, `db.go-bookingapp.local` ->
+  in `traefik/dynamic.yml` (e.g. `api.go-booking.local` -> app,
+  `mail.go-booking.local` -> Mailpit, `db.go-booking.local` ->
   Adminer).
 
 These domains do not resolve on their own: you need to edit `/etc/hosts`
 to point them to `127.0.0.1` (see `make hosts` below).
 
-Distinct domains (`*.go-bookingapp.local` rather than `bookingapp.local`)
+Distinct domains (`*.go-booking.local` rather than `bookingapp.local`)
 are used deliberately, so this stack can run alongside the original
 Symfony project without `/etc/hosts` or port collisions.
 
@@ -131,9 +131,9 @@ Symfony project without `/etc/hosts` or port collisions.
 ### Clone the repository
 
 ```bash
-git clone git@github.com:your-org/go-bookingapp.git
+git clone git@github.com:your-org/go-booking.git
 
-cd go-bookingapp
+cd go-booking
 ```
 
 ### Configure Hosts
@@ -158,7 +158,7 @@ builds and starts Traefik, the app, PostgreSQL, Adminer, and Mailpit.
 Application:
 
 ```text
-https://api.go-bookingapp.local
+https://api.go-booking.local
 ```
 
 Traefik Dashboard:
@@ -170,13 +170,13 @@ http://localhost:8080
 Adminer:
 
 ```text
-https://db.go-bookingapp.local
+https://db.go-booking.local
 ```
 
 Mailpit:
 
 ```text
-https://mail.go-bookingapp.local
+https://mail.go-booking.local
 ```
 
 > `make up` builds the `app` image from `docker/app/Dockerfile`, which
@@ -263,7 +263,7 @@ migrate create -ext sql -dir app/db/migrations -seq <migration_name>
 Planned layout, following standard Go project conventions:
 
 ```text
-go-bookingapp/
+go-booking/
 
 ├── docker/
 │   └── app/                 # Dockerfile for the Go application

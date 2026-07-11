@@ -2,3 +2,5 @@
 
 app/bin/
 certs/*.pem
+
+app/.env

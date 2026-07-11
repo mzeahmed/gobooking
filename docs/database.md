@@ -2,7 +2,7 @@
 
 ## Overview
 
-go-bookingapp uses PostgreSQL as its primary database.
+go-booking uses PostgreSQL as its primary database.
 
 All entities use integer identifiers (`SERIAL` / `BIGSERIAL`), matching the
 identifiers actually used by the original Symfony application's Doctrine

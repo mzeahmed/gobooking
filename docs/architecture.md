@@ -2,7 +2,7 @@
 
 ## Overview
 
-go-bookingapp is a room and workspace reservation platform, a Go port of
+go-booking is a room and workspace reservation platform, a Go port of
 the Symfony BookingApp project. It reuses the same domain model and
 product scope, implemented with explicit, idiomatic Go instead of a
 full-stack framework.
@@ -30,8 +30,8 @@ the Symfony project. Traefik:
 
 * Terminates HTTPS using local certificates generated with mkcert.
 * Redirects all HTTP traffic to HTTPS.
-* Routes `api.go-bookingapp.local`, `mail.go-bookingapp.local`, and
-  `db.go-bookingapp.local` to the app, Mailpit, and Adminer containers
+* Routes `api.go-booking.local`, `mail.go-booking.local`, and
+  `db.go-booking.local` to the app, Mailpit, and Adminer containers
   respectively, via `traefik/dynamic.yml`.
 
 See [database.md](database.md) for schema details and the project

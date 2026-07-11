@@ -1,7 +1,7 @@
 http:
   routers:
     app:
-      rule: Host(`api.go-bookingapp.local`)
+      rule: Host(`api.go-booking.local`)
       entryPoints:
         - web
         - websecure
@@ -9,7 +9,7 @@ http:
       tls: { }
 
     mailpit:
-      rule: Host(`mail.go-bookingapp.local`)
+      rule: Host(`mail.go-booking.local`)
       entryPoints:
         - web
         - websecure
@@ -17,7 +17,7 @@ http:
       tls: { }
 
     adminer:
-      rule: Host(`db.go-bookingapp.local`)
+      rule: Host(`db.go-booking.local`)
       entryPoints:
         - websecure
       service: adminer
@@ -41,5 +41,5 @@ http:
 
 tls:
   certificates:
-    - certFile: /certs/go-bookingapp.local.pem
-      keyFile: /certs/go-bookingapp.local-key.pem
+    - certFile: /certs/go-booking.local.pem
+      keyFile: /certs/go-booking.local-key.pem
