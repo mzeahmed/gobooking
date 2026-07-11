@@ -16,7 +16,7 @@ Browser
 Traefik
     │
     ▼
-Go HTTP server (net/http + chi)
+Go HTTP server (net/http)
     │
  ┌──┴──────────────┐
  ▼                 ▼
@@ -40,7 +40,7 @@ See [database.md](database.md) for schema details and the project
 ## Application Layers
 
 ```text
-HTTP handler (chi)
+HTTP handler (net/http)
     │
     ▼
 Request decoding / validation
@@ -107,7 +107,7 @@ Role-based, same roles as the source app:
 * `ROLE_MANAGER`
 * `ROLE_ADMIN`
 
-Enforced with `chi` middleware that reads the authenticated user's roles
+Enforced with middleware that reads the authenticated user's roles
 and gates access to handlers — the equivalent of Symfony Voters, without
 the framework machinery.
 

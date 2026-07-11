@@ -6,8 +6,8 @@ WORKDIR /workspace
 RUN go install github.com/air-verse/air@latest
 
 # Cache go module downloads in their own layer
-COPY app/go.mod app/go.sum ./app/
-RUN cd app && go mod download
+COPY api/go.mod api/go.sum ./api/
+RUN cd api && go mod download
 
 # Source code is bind-mounted by docker-compose for hot reload during
 # development; it's copied here too so the image stays runnable on its own.

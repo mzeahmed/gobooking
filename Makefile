@@ -43,25 +43,25 @@ help: ## Show available commands
 # ==============================================================================
 
 run: ## Run the server
-	cd app && go run ./cmd/api
+	cd api && go run ./cmd
 
 build: ## Build the local binary
-	@mkdir -p app/bin
-	cd app && go build -o bin/booking ./cmd/api
-	@echo "$(GREEN)✓ Binary generated in app/bin/booking$(RESET)"
+	@mkdir -p api/bin
+	cd api && go build -o bin/booking ./cmd
+	@echo "$(GREEN)✓ Binary generated in api/bin/booking$(RESET)"
 
 # ==============================================================================
 # Quality
 # ==============================================================================
 
 fmt: ## Format the source code
-	cd app && go fmt ./...
+	cd api && go fmt ./...
 
 vet: ## Run go vet
-	cd app && go vet ./...
+	cd api && go vet ./...
 
 test: ## Run unit tests
-	cd app && go test ./...
+	cd api && go test ./...
 
 check: fmt vet test ## Run all quality checks
 
@@ -70,11 +70,11 @@ check: fmt vet test ## Run all quality checks
 # ==============================================================================
 
 tidy: ## Clean up go.mod / go.sum
-	cd app && go mod tidy
+	cd api && go mod tidy
 
 update: ## Update dependencies
-	cd app && go get -u ./...
-	cd app && go mod tidy
+	cd api && go get -u ./...
+	cd api && go mod tidy
 
 # ==============================================================================
 # Database
@@ -82,7 +82,7 @@ update: ## Update dependencies
 migrations: ## Create migrations | make migrations t="table_name"
 	@if [ $(t) ]; then \
   		echo "$(GREEN)Migrations building ... $(RESET)"; \
-		cd app && migrate create -ext sql -dir db/migrations -seq ${t}; \
+		cd api && migrate create -ext sql -dir db/migrations -seq ${t}; \
 		echo "$(GREEN)Migrations built $(RESET)"; \
 	else \
 		echo "$(RED)(t) param is required (make migrations t='table_name') $(RESET)"; \
@@ -90,16 +90,16 @@ migrations: ## Create migrations | make migrations t="table_name"
 
 migrate-up: ## Apply migrations
 	@echo "$(GREEN)Database migrations up ... $(RESET)";
-	migrate -path app/db/migrations -database "$$DATABASE_URL" up
+	migrate -path api/db/migrations -database "$$DATABASE_URL" up
 	@echo "$(GREEN)Database migrations finished! $(RESET)";
 
 migrate-down: ## Roll back the last migration
 	@echo "$(GREEN)Rollback last database migration ... $(RESET)";
-	migrate -path app/db/migrations -database "$$DATABASE_URL" down 1;
+	migrate -path api/db/migrations -database "$$DATABASE_URL" down 1;
 	@echo "$(GREEN)Rollback done! $(RESET)";
 
 sqlc: ## Regenerate Go code from SQL queries
-	cd app && sqlc generate
+	cd api && sqlc generate
 
 # ==============================================================================
 # Docker
@@ -160,7 +160,7 @@ bash: ## Access the app container
 # ==============================================================================
 
 clean: ## Remove generated files
-	rm -rf app/bin
+	rm -rf api/bin
 
 doctor: ## Show the development environment
 	@echo ""

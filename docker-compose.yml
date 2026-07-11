@@ -25,7 +25,7 @@ services:
       - go_mod_cache:/go/pkg/mod
       - go_build_cache:/root/.cache/go-build
       - /workspace/tmp
-      - /workspace/app/bin
+      - /workspace/api/bin
     environment:
       APP_PORT: 8080
       DB_HOST: database

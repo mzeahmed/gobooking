@@ -5,7 +5,7 @@ tmp_dir = "tmp"
 [build]
 # Command to build the application
 # Add any build flags needed (like -race for race detection)
-cmd = "cd app && go build -buildvcs=false -o ../tmp/main ./cmd/api"
+cmd = "cd api && go build -buildvcs=false -o ../tmp/main ./cmd/api"
 
 entrypoint = "tmp/main"
 
@@ -18,11 +18,11 @@ exclude_dir = [
     "certs",
     "traefik",
     "docs",
-    "app/bin",
-    "app/db/migrations"
+    "api/bin",
+    "api/db/migrations"
 ]
 
-include_dir = ["app"]
+include_dir = ["api"]
 
 # Watch the root .env explicitly since it lives outside include_dir
 include_file = [".env"]
@@ -46,7 +46,7 @@ kill_delay = "0s"
 
 # Specific files to exclude from watching
 exclude_file = [
-    "app/go_sum",
+    "api/go_sum",
     ".air.toml"
 ]
 

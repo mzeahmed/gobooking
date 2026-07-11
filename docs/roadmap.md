@@ -4,15 +4,15 @@
 
 * [x] Go module setup
 * [x] Docker Compose (PostgreSQL, Mailpit)
-* [ ] golang-migrate setup
+* [x] golang-migrate setup
 * [ ] sqlc setup
-* [x] HTTP server bootstrap (chi router, middleware, config loading)
+* [x] HTTP server bootstrap (net/http router, middleware, config loading)
 
 ---
 
 ## Phase 2 - Authentication
 
-* [ ] `user` schema + migration
+* [x] `user` schema + migration
 * [ ] Registration
 * [ ] Login
 * [ ] Logout

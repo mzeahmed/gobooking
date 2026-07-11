@@ -1,6 +1,6 @@
 .idea
 
-app/bin/
+api/bin/
 certs/*.pem
 
 tmp/

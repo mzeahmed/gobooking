@@ -33,7 +33,7 @@ Administrators can:
 * Manage users
 
 This is also a learning project, aimed at practicing idiomatic Go backend
-development: `net/http`, `chi`, `sqlc`, structured concurrency, testing,
+development: `net/http`, `sqlc`, structured concurrency, testing,
 and clean layering without pulling in a full framework.
 
 ---
@@ -43,7 +43,7 @@ and clean layering without pulling in a full framework.
 ### Backend
 
 * Go 1.23+
-* [chi](https://github.com/go-chi/chi) — HTTP router / middleware
+* `net/http` (stdlib) — HTTP router / middleware
 * [sqlc](https://sqlc.dev) — typed Go code generated from SQL, on top of `database/sql`
 * [golang-migrate](https://github.com/golang-migrate/migrate) — versioned SQL migrations
 * [pgx](https://github.com/jackc/pgx) — PostgreSQL driver
@@ -179,8 +179,8 @@ Mailpit:
 https://mail.gobooking.local
 ```
 
-> `make up` builds the `app` image from `docker/app/Dockerfile`, which
-> expects `app/go.mod` and a `cmd/api` entrypoint. Until the Go module and
+> `make up` builds the `app` image from `Dockerfile`, which
+> expects `api/go.mod` and a `cmd/api` entrypoint. Until the Go module and
 > entrypoint exist (Phase 1 of the roadmap), only run `make up
 > database mailpit adminer traefik` or comment out the `app` service.
 
@@ -201,29 +201,29 @@ go run ./cmd/api
 make help
 ```
 
-| Command          | Description                                    |
-|------------------|-------------------------------------------------|
-| `make run`       | Run the server locally                          |
-| `make build`     | Build the binary into `app/bin/bookingapp`      |
-| `make fmt`       | Format the source code                          |
-| `make vet`       | Run `go vet`                                    |
-| `make test`      | Run unit tests                                  |
-| `make check`     | Run `fmt`, `vet`, and `test`                    |
-| `make tidy`      | Clean up `go.mod` / `go.sum`                    |
-| `make update`    | Update dependencies                             |
-| `make migrate-up`   | Apply database migrations                    |
-| `make migrate-down` | Roll back the last migration                 |
-| `make sqlc`      | Regenerate Go code from SQL queries             |
-| `make hosts`     | Add local domains to `/etc/hosts` (sudo)        |
-| `make certs`     | Generate local TLS certificates if missing      |
-| `make up`        | Build and start the Docker containers           |
-| `make down`      | Stop the Docker containers                      |
-| `make restart`   | Restart the Docker containers                   |
-| `make logs`      | Show container logs                             |
-| `make ps`        | List containers                                 |
-| `make bash`      | Open a shell in the app container               |
-| `make clean`     | Remove generated files                          |
-| `make doctor`    | Show the development environment                |
+| Command          | Description                                |
+|------------------|--------------------------------------------|
+| `make run`       | Run the server locally                     |
+| `make build`     | Build the binary into `api/bin/bookingapp` |
+| `make fmt`       | Format the source code                     |
+| `make vet`       | Run `go vet`                               |
+| `make test`      | Run unit tests                             |
+| `make check`     | Run `fmt`, `vet`, and `test`               |
+| `make tidy`      | Clean up `go.mod` / `go.sum`               |
+| `make update`    | Update dependencies                        |
+| `make migrate-up`   | Apply database migrations                  |
+| `make migrate-down` | Roll back the last migration               |
+| `make sqlc`      | Regenerate Go code from SQL queries        |
+| `make hosts`     | Add local domains to `/etc/hosts` (sudo)   |
+| `make certs`     | Generate local TLS certificates if missing |
+| `make up`        | Build and start the Docker containers      |
+| `make down`      | Stop the Docker containers                 |
+| `make restart`   | Restart the Docker containers              |
+| `make logs`      | Show container logs                        |
+| `make ps`        | List containers                            |
+| `make bash`      | Open a shell in the app container          |
+| `make clean`     | Remove generated files                     |
+| `make doctor`    | Show the development environment           |
 
 ---
 
@@ -244,13 +244,13 @@ golangci-lint run
 ### Create a New Migration
 
 ```bash
-migrate create -ext sql -dir app/db/migrations -seq <migration_name>
+migrate create -ext sql -dir api/db/migrations -seq <migration_name>
 ```
 
 ### Create a New Feature
 
 1. Create a feature branch.
-2. Write/update SQL queries under `app/db/queries/` and run `make sqlc`.
+2. Write/update SQL queries under `api/db/queries/` and run `make sqlc`.
 3. Implement the handler/service.
 4. Add tests.
 5. Run `make check`.
@@ -276,7 +276,7 @@ gobooking/
 │
 ├── docs/
 │
-├── app/                     # Go module (not yet implemented)
+├── api/                     # Go module (not yet implemented)
 │   ├── cmd/
 │   │   └── api/               # main package, application entrypoint
 │   │
@@ -285,7 +285,7 @@ gobooking/
 │   │   ├── room/                 # room + equipment domain logic
 │   │   ├── user/                  # user domain logic
 │   │   ├── review/                # review domain logic
-│   │   ├── http/                   # chi router, handlers, middleware
+│   │   ├── http/                   # net/http router, handlers, middleware
 │   │   └── db/                      # sqlc-generated code
 │   │
 │   ├── db/
