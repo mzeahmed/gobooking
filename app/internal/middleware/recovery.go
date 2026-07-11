@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/mzeahmed/go-booking/internal/response"
+	"github.com/mzeahmed/gobooking/internal/response"
 )
 
 func Recovery(next http.Handler) http.Handler {

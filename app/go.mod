@@ -1,5 +1,5 @@
-module github.com/mzeahmed/go-booking
+module github.com/mzeahmed/gobooking
 
-go 1.22
+go 1.26.5
 
-require github.com/joho/godotenv v1.5.1 // indirect
+require github.com/joho/godotenv v1.5.1

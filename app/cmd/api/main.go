@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/mzeahmed/go-booking/internal/config"
-	"github.com/mzeahmed/go-booking/internal/router"
+	"github.com/mzeahmed/gobooking/internal/config"
+	"github.com/mzeahmed/gobooking/internal/router"
 )
 
 func main() {

@@ -6,17 +6,22 @@ import (
 	"github.com/mzeahmed/gobooking/internal/response"
 )
 
-type Response struct {
-	Status string `json:"status"`
+// Handler handles all HTTP requests related to the health module.
+type Handler struct {
+	service *Service
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+// NewHandler creates a new health handler.
+func NewHandler(service *Service) *Handler {
+	return &Handler{
+		service: service,
+	}
+}
 
-	response.JSON(
-		w,
-		http.StatusOK,
-		Response{
-			Status: "ok",
-		},
-	)
+// Health returns the application health status.
+func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
+
+	resp := h.service.Health()
+
+	response.JSON(w, http.StatusOK, resp)
 }

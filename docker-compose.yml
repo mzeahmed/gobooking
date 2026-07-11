@@ -18,7 +18,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: docker/app/Dockerfile
+      dockerfile: Dockerfile
     container_name: gobooking_app
     environment:
       DB_HOST: database
@@ -44,7 +44,7 @@ services:
 
   database:
     image: postgres:16-alpine
-    container_name: go_booking_database
+    container_name: gobooking_database
     environment:
       POSTGRES_DB: gobooking
       POSTGRES_USER: gobooking
