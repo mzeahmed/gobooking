@@ -5,16 +5,20 @@ package router
 import (
 	"net/http"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/mzeahmed/gobooking/internal/modules/auth"
 	"github.com/mzeahmed/gobooking/internal/modules/health"
 )
 
 // New builds and returns the application's top-level http.Handler, with all
 // module routes registered on a fresh http.ServeMux.
-func New() http.Handler {
+func New(pool *pgxpool.Pool, jwtSecret string) http.Handler {
 
 	mux := http.NewServeMux()
 
-	health.New().RegisterRoutes(mux)
+	health.New(jwtSecret).RegisterRoutes(mux)
+	auth.New(pool, jwtSecret).RegisterRoutes(mux)
 
 	return mux
 }

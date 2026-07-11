@@ -5,7 +5,7 @@ tmp_dir = "tmp"
 [build]
 # Command to build the application
 # Add any build flags needed (like -race for race detection)
-cmd = "cd api && go build -buildvcs=false -o ../tmp/main ./cmd/api"
+cmd = "cd api && go build -buildvcs=false -o ../tmp/main ./cmd"
 
 entrypoint = "tmp/main"
 

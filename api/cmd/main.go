@@ -5,10 +5,12 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 
 	"github.com/mzeahmed/gobooking/internal/config"
+	"github.com/mzeahmed/gobooking/internal/db"
 	"github.com/mzeahmed/gobooking/internal/router"
 )
 
@@ -18,7 +20,13 @@ func main() {
 
 	cfg := config.Load()
 
-	r := router.New()
+	pool, err := db.New(context.Background(), cfg)
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+	defer pool.Close()
+
+	r := router.New(pool, cfg.JWTSecret)
 
 	server := &http.Server{
 		Addr:    ":" + cfg.Port,
