@@ -2,11 +2,11 @@
 
 ## Phase 1 - Foundation
 
-* [ ] Go module setup
-* [ ] Docker Compose (PostgreSQL, Mailpit)
+* [x] Go module setup
+* [x] Docker Compose (PostgreSQL, Mailpit)
 * [ ] golang-migrate setup
 * [ ] sqlc setup
-* [ ] HTTP server bootstrap (chi router, middleware, config loading)
+* [x] HTTP server bootstrap (chi router, middleware, config loading)
 
 ---
 

@@ -2,6 +2,11 @@
 # gobooking - Development Makefile
 # ==============================================================================
 
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 .DEFAULT_GOAL := help
 
 COMPOSE := docker compose -f docker-compose.yml
@@ -74,12 +79,24 @@ update: ## Update dependencies
 # ==============================================================================
 # Database
 # ==============================================================================
+migrations: ## Create migrations | make migrations t="table_name"
+	@if [ $(t) ]; then \
+  		echo "$(GREEN)Migrations building ... $(RESET)"; \
+		cd app && migrate create -ext sql -dir db/migrations -seq ${t}; \
+		echo "$(GREEN)Migrations built $(RESET)"; \
+	else \
+		echo "$(RED)(t) param is required (make migrations t='table_name') $(RESET)"; \
+	fi
 
 migrate-up: ## Apply migrations
+	@echo "$(GREEN)Database migrations up ... $(RESET)";
 	migrate -path app/db/migrations -database "$$DATABASE_URL" up
+	@echo "$(GREEN)Database migrations finished! $(RESET)";
 
 migrate-down: ## Roll back the last migration
-	migrate -path app/db/migrations -database "$$DATABASE_URL" down 1
+	@echo "$(GREEN)Rollback last database migration ... $(RESET)";
+	migrate -path app/db/migrations -database "$$DATABASE_URL" down 1;
+	@echo "$(GREEN)Rollback done! $(RESET)";
 
 sqlc: ## Regenerate Go code from SQL queries
 	cd app && sqlc generate
