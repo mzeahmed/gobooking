@@ -62,8 +62,8 @@ type UserResponse struct {
 	LastName  string `json:"last_name"`
 }
 
-// AuthResponse is returned by both registration and login on success.
-type AuthResponse struct {
+// Response is returned by both registration and login on success.
+type Response struct {
 	Token string       `json:"token"`
 	User  UserResponse `json:"user"`
 }

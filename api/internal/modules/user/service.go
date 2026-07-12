@@ -20,3 +20,8 @@ func NewService(users *Repository) *Service {
 func (s *Service) DeleteUser(ctx context.Context, req DeleteRequest) error {
 	return s.users.Delete(ctx, req.ID)
 }
+
+// ListUsers returns every registered user.
+func (s *Service) ListUsers(ctx context.Context) ([]User, error) {
+	return s.users.List(ctx)
+}

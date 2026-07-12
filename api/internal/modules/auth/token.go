@@ -21,7 +21,6 @@ type Claims struct {
 
 // generateToken issues a signed JWT for the given user.
 func generateToken(secret string, u user.User) (string, error) {
-
 	claims := Claims{
 		Roles: u.Roles,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -39,7 +38,6 @@ func generateToken(secret string, u user.User) (string, error) {
 // ParseToken validates tokenString and returns its claims, or an error if
 // the token is malformed, not signed with secret, or expired.
 func ParseToken(secret, tokenString string) (*Claims, error) {
-
 	claims := &Claims{}
 
 	_, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (any, error) {

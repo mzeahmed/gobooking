@@ -36,16 +36,19 @@ func New(pool *pgxpool.Pool) *Module {
 // (middleware -> auth -> user -> middleware).
 func (m *Module) RegisterRoutes(mux *http.ServeMux, authenticate func(http.Handler) http.Handler) {
 
+	// Listing users requires the caller to be authenticated; Handler.List
+	// further restricts it to admins, since the role check depends on the
+	// caller's own roles, not just the fact that they're logged in.
+	mux.Handle(
+		"GET /users",
+		authenticate(http.HandlerFunc(m.handler.List)),
+	)
+
 	// Only a logged-in caller can delete a user account, and only their
 	// own account (see Handler.Delete, which reads the target ID from the
 	// authenticated identity rather than the request body).
 	mux.Handle(
 		"DELETE /users/delete",
 		authenticate(http.HandlerFunc(m.handler.Delete)),
-	)
-
-	mux.Handle(
-		"POST /users/login",
-		http.HandlerFunc(m.handler.Login),
 	)
 }

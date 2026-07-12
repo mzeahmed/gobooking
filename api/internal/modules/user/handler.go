@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"net/http"
+	"slices"
 
 	"github.com/mzeahmed/gobooking/internal/reqctx"
 	"github.com/mzeahmed/gobooking/internal/response"
@@ -20,8 +21,47 @@ func NewHandler(service *Service) *Handler {
 	}
 }
 
-func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+// List handles GET /users.
+//
+// This route is guarded by middleware.Authenticate (see
+// Module.RegisterRoutes) and further restricted to callers with the
+// "admin" role, since it exposes every registered user's email and roles.
+func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
+	authUser, ok := reqctx.AuthUserFromContext(r.Context())
+
+	if !ok {
+		// Should not happen behind Authenticate, but fail closed if it does.
+		response.JSON(w, http.StatusUnauthorized, map[string]string{
+			"error": "authentication required",
+		})
+
+		return
+	}
+
+	if !slices.Contains(authUser.Roles, string(RoleAdmin)) {
+		response.JSON(w, http.StatusForbidden, map[string]string{
+			"error": "admin role required",
+		})
+
+		return
+	}
+
+	users, err := h.service.ListUsers(r.Context())
+	if err != nil {
+		response.JSON(w, http.StatusInternalServerError, map[string]string{
+			"error": "internal server error : " + err.Error(),
+		})
+
+		return
+	}
+
+	res := make([]UserResponse, len(users))
+	for i, u := range users {
+		res[i] = newUserResponse(u)
+	}
+
+	response.JSON(w, http.StatusOK, res)
 }
 
 // Delete handles DELETE /users/delete.

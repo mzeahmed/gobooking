@@ -110,12 +110,65 @@ func (r *Repository) FindByEmail(ctx context.Context, email string) (User, error
 		return User{}, err
 	}
 
-	u.Roles = make([]Role, len(roleNames))
-	for i, name := range roleNames {
-		u.Roles[i] = Role(name)
-	}
+	u.Roles = rolesFromNames(roleNames)
 
 	return u, nil
+}
+
+// List returns every user, ordered by ID.
+func (r *Repository) List(ctx context.Context) ([]User, error) {
+
+	query := `
+		SELECT u.id, u.email, u.password, COALESCE(u.first_name, ''), COALESCE(u.last_name, ''),
+		       u.is_verified, u.created_at, u.updated_at,
+		       COALESCE(array_agg(r.name) FILTER (WHERE r.name IS NOT NULL), '{}')
+		FROM users u
+		LEFT JOIN user_roles ur ON ur.user_id = u.id
+		LEFT JOIN roles r ON r.id = ur.role_id
+		GROUP BY u.id
+		ORDER BY u.id
+	`
+
+	rows, err := r.pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []User
+
+	for rows.Next() {
+		var u User
+		var roleNames []string
+
+		if err := rows.Scan(
+			&u.ID, &u.Email, &u.PasswordHash, &u.FirstName, &u.LastName, &u.IsVerified, &u.CreatedAt, &u.UpdatedAt, &roleNames,
+		); err != nil {
+			return nil, err
+		}
+
+		u.Roles = rolesFromNames(roleNames)
+
+		users = append(users, u)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+// rolesFromNames converts role names as scanned from the roles table into
+// the Role type used by the domain model.
+func rolesFromNames(names []string) []Role {
+
+	roles := make([]Role, len(names))
+	for i, name := range names {
+		roles[i] = Role(name)
+	}
+
+	return roles
 }
 
 // Delete removes the user matching the given ID, returning ErrNotFound
