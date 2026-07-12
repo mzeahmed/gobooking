@@ -308,6 +308,7 @@ gobooking/
 * [docs/architecture.md](docs/architecture.md) — layering and infrastructure overview
 * [docs/database.md](docs/database.md) — schema, relationships, constraints
 * [docs/roadmap.md](docs/roadmap.md) — implementation phases
+* [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) — common local setup issues and fixes
 
 ---
 
