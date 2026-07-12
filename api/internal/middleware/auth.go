@@ -35,19 +35,28 @@ func Authenticate(jwtSecret string) func(http.Handler) http.Handler {
 
 			tokenString, ok := bearerToken(r)
 			if !ok {
-				response.JSON(w, http.StatusUnauthorized, map[string]string{"error": "missing bearer token"})
+				response.JSON(w, http.StatusUnauthorized, map[string]string{
+					"error": "missing bearer token",
+				})
+
 				return
 			}
 
 			claims, err := auth.ParseToken(jwtSecret, tokenString)
 			if err != nil {
-				response.JSON(w, http.StatusUnauthorized, map[string]string{"error": "invalid or expired token"})
+				response.JSON(w, http.StatusUnauthorized, map[string]string{
+					"error": "invalid or expired token",
+				})
+
 				return
 			}
 
 			userID, err := strconv.Atoi(claims.Subject)
 			if err != nil {
-				response.JSON(w, http.StatusUnauthorized, map[string]string{"error": "invalid token subject"})
+				response.JSON(w, http.StatusUnauthorized, map[string]string{
+					"error": "invalid token subject",
+				})
+
 				return
 			}
 

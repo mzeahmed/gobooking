@@ -43,8 +43,14 @@ func (r *Repository) Create(ctx context.Context, u User) (User, error) {
 	`
 
 	err = r.pool.QueryRow(
-		ctx, query,
-		u.Email, rolesJSON, u.PasswordHash, u.FirstName, u.LastName, u.IsVerified,
+		ctx,
+		query,
+		u.Email,
+		rolesJSON,
+		u.PasswordHash,
+		u.FirstName,
+		u.LastName,
+		u.IsVerified,
 	).Scan(&u.ID, &u.CreatedAt, &u.UpdatedAt)
 
 	if err != nil {
@@ -90,4 +96,22 @@ func (r *Repository) FindByEmail(ctx context.Context, email string) (User, error
 	}
 
 	return u, nil
+}
+
+// Delete removes the user matching the given ID, returning ErrNotFound
+// if no such user exists.
+func (r *Repository) Delete(ctx context.Context, id int) error {
+
+	query := `DELETE FROM users WHERE id = $1`
+
+	tag, err := r.pool.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+
+	return nil
 }

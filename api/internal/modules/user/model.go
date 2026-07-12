@@ -1,6 +1,7 @@
 // Package user owns the user domain: the User model and its persistence.
-// It is consumed by the auth module rather than exposing its own HTTP
-// routes.
+// It is consumed by the auth module for registration and login, and
+// exposes its own HTTP routes for user account management (e.g.
+// deletion).
 package user
 
 import "time"

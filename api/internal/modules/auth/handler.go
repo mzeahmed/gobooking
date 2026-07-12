@@ -28,23 +28,35 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var req RegisterRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		response.JSON(w, http.StatusBadRequest, map[string]string{"error": "invalid request body"})
+		response.JSON(w, http.StatusBadRequest, map[string]string{
+			"error": "invalid request body",
+		})
+
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		response.JSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		response.JSON(w, http.StatusBadRequest, map[string]string{
+			"error": err.Error(),
+		})
+
 		return
 	}
 
 	res, err := h.service.Register(r.Context(), req)
 	if err != nil {
 		if errors.Is(err, user.ErrEmailTaken) {
-			response.JSON(w, http.StatusConflict, map[string]string{"error": "email already registered"})
+			response.JSON(w, http.StatusConflict, map[string]string{
+				"error": user.ErrEmailTaken.Error(),
+			})
+
 			return
 		}
 
-		response.JSON(w, http.StatusInternalServerError, map[string]string{"error": "internal server error"})
+		response.JSON(w, http.StatusInternalServerError, map[string]string{
+			"error": "internal server error",
+		})
+
 		return
 	}
 
@@ -57,23 +69,35 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var req LoginRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		response.JSON(w, http.StatusBadRequest, map[string]string{"error": "invalid request body"})
+		response.JSON(w, http.StatusBadRequest, map[string]string{
+			"error": "invalid request body",
+		})
+
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		response.JSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		response.JSON(w, http.StatusBadRequest, map[string]string{
+			"error": err.Error(),
+		})
+
 		return
 	}
 
 	res, err := h.service.Login(r.Context(), req)
 	if err != nil {
 		if errors.Is(err, ErrInvalidCredentials) {
-			response.JSON(w, http.StatusUnauthorized, map[string]string{"error": "invalid email or password"})
+			response.JSON(w, http.StatusUnauthorized, map[string]string{
+				"error": "invalid email or password",
+			})
+
 			return
 		}
 
-		response.JSON(w, http.StatusInternalServerError, map[string]string{"error": "internal server error"})
+		response.JSON(w, http.StatusInternalServerError, map[string]string{
+			"error": "internal server error",
+		})
+
 		return
 	}
 

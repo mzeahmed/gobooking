@@ -3,6 +3,8 @@ package auth
 import (
 	"errors"
 	"strings"
+
+	"github.com/mzeahmed/gobooking/internal/modules/user"
 )
 
 // RegisterRequest is the expected JSON body of a registration request.
@@ -22,6 +24,14 @@ func (r RegisterRequest) Validate() error {
 
 	if len(r.Password) < 8 {
 		return errors.New("password must be at least 8 characters")
+	}
+
+	if r.FirstName == "" {
+		return user.ErrFirstNameEmpty
+	}
+
+	if r.LastName == "" {
+		return user.ErrLastNameEmpty
 	}
 
 	return nil

@@ -20,13 +20,9 @@ func Recovery(next http.Handler) http.Handler {
 
 				log.Printf("panic: %v", err)
 
-				response.JSON(
-					w,
-					http.StatusInternalServerError,
-					map[string]string{
-						"error": "internal server error",
-					},
-				)
+				response.JSON(w, http.StatusInternalServerError, map[string]string{
+					"error": "internal server error",
+				})
 			}
 
 		}()
