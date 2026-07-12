@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 
 	"github.com/jackc/pgx/v5"
@@ -27,26 +26,26 @@ func NewRepository(pool *pgxpool.Pool) *Repository {
 	}
 }
 
-// Create inserts a new user and returns it with its generated fields
-// (ID, CreatedAt, UpdatedAt) populated.
+// Create inserts a new user with the default "user" role and returns it
+// with its generated fields (ID, CreatedAt, UpdatedAt, Roles) populated.
 func (r *Repository) Create(ctx context.Context, u User) (User, error) {
 
-	rolesJSON, err := json.Marshal(u.Roles)
+	tx, err := r.pool.Begin(ctx)
 	if err != nil {
 		return User{}, err
 	}
+	defer tx.Rollback(ctx)
 
-	query := `
-		INSERT INTO users (email, roles, password, first_name, last_name, is_verified)
-		VALUES ($1, $2, $3, $4, $5, $6)
+	insertUser := `
+		INSERT INTO users (email, password, first_name, last_name, is_verified)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, created_at, updated_at
 	`
 
-	err = r.pool.QueryRow(
+	err = tx.QueryRow(
 		ctx,
-		query,
+		insertUser,
 		u.Email,
-		rolesJSON,
 		u.PasswordHash,
 		u.FirstName,
 		u.LastName,
@@ -63,6 +62,21 @@ func (r *Repository) Create(ctx context.Context, u User) (User, error) {
 		return User{}, err
 	}
 
+	assignDefaultRole := `
+		INSERT INTO user_roles (user_id, role_id)
+		SELECT $1, id FROM roles WHERE name = $2
+	`
+
+	if _, err := tx.Exec(ctx, assignDefaultRole, u.ID, string(RoleUser)); err != nil {
+		return User{}, err
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return User{}, err
+	}
+
+	u.Roles = []Role{RoleUser}
+
 	return u, nil
 }
 
@@ -71,16 +85,21 @@ func (r *Repository) Create(ctx context.Context, u User) (User, error) {
 func (r *Repository) FindByEmail(ctx context.Context, email string) (User, error) {
 
 	query := `
-		SELECT id, email, roles, password, COALESCE(first_name, ''), COALESCE(last_name, ''), is_verified, created_at, updated_at
-		FROM users
-		WHERE email = $1
+		SELECT u.id, u.email, u.password, COALESCE(u.first_name, ''), COALESCE(u.last_name, ''),
+		       u.is_verified, u.created_at, u.updated_at,
+		       COALESCE(array_agg(r.name) FILTER (WHERE r.name IS NOT NULL), '{}')
+		FROM users u
+		LEFT JOIN user_roles ur ON ur.user_id = u.id
+		LEFT JOIN roles r ON r.id = ur.role_id
+		WHERE u.email = $1
+		GROUP BY u.id
 	`
 
 	var u User
-	var rolesJSON []byte
+	var roleNames []string
 
 	err := r.pool.QueryRow(ctx, query, email).Scan(
-		&u.ID, &u.Email, &rolesJSON, &u.PasswordHash, &u.FirstName, &u.LastName, &u.IsVerified, &u.CreatedAt, &u.UpdatedAt,
+		&u.ID, &u.Email, &u.PasswordHash, &u.FirstName, &u.LastName, &u.IsVerified, &u.CreatedAt, &u.UpdatedAt, &roleNames,
 	)
 
 	if err != nil {
@@ -91,8 +110,9 @@ func (r *Repository) FindByEmail(ctx context.Context, email string) (User, error
 		return User{}, err
 	}
 
-	if err := json.Unmarshal(rolesJSON, &u.Roles); err != nil {
-		return User{}, err
+	u.Roles = make([]Role, len(roleNames))
+	for i, name := range roleNames {
+		u.Roles[i] = Role(name)
 	}
 
 	return u, nil

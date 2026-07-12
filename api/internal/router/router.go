@@ -7,6 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/mzeahmed/gobooking/internal/middleware"
 	"github.com/mzeahmed/gobooking/internal/modules/auth"
 	"github.com/mzeahmed/gobooking/internal/modules/health"
 	"github.com/mzeahmed/gobooking/internal/modules/user"
@@ -22,5 +23,5 @@ func New(pool *pgxpool.Pool, jwtSecret string) http.Handler {
 	auth.New(pool, jwtSecret).RegisterRoutes(mux)
 	user.New(pool).RegisterRoutes(mux)
 
-	return mux
+	return middleware.Logging(mux)
 }

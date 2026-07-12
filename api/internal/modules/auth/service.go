@@ -36,7 +36,6 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (AuthRespon
 	created, err := s.users.Create(ctx, user.User{
 		Email:        req.Email,
 		PasswordHash: string(hash),
-		Roles:        []user.Role{user.RoleUser},
 		FirstName:    req.FirstName,
 		LastName:     req.LastName,
 		IsVerified:   false,

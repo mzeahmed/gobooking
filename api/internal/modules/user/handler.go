@@ -52,7 +52,7 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 		}
 
 		response.JSON(w, http.StatusInternalServerError, map[string]string{
-			"error": "internal server error",
+			"error": "internal server error : " + err.Error(),
 		})
 
 		return

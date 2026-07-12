@@ -6,17 +6,19 @@ package user
 
 import "time"
 
-// Role identifies a permission level, matching the roles used in the
-// source Symfony application.
+// Role identifies a permission level, matching the roles.name values
+// seeded in the roles table.
 type Role string
 
 const (
-	RoleUser    Role = "ROLE_USER"
-	RoleManager Role = "ROLE_MANAGER"
-	RoleAdmin   Role = "ROLE_ADMIN"
+	RoleAdmin     Role = "admin"
+	RoleUser      Role = "user"
+	RoleModerator Role = "moderator"
+	RoleGuest     Role = "guest"
 )
 
-// User represents a row of the users table.
+// User represents a row of the users table, along with the roles
+// assigned to it through the user_roles table.
 type User struct {
 	ID           int
 	Email        string
