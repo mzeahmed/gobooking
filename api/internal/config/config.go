@@ -6,6 +6,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -18,6 +19,8 @@ import (
 type Config struct {
 	AppEnv string
 	Port   string
+
+	DSN string
 
 	DBHost     string
 	DBPort     string
@@ -37,7 +40,7 @@ func Load() Config {
 		log.Println(".env file not found, using system environment variables")
 	}
 
-	return Config{
+	cfg := Config{
 		AppEnv: getEnv("APP_ENV", "development"),
 		Port:   getEnv("APP_PORT", "8080"),
 
@@ -49,6 +52,15 @@ func Load() Config {
 
 		JWTSecret: getEnv("JWT_SECRET", "change-me"),
 	}
+
+	// If DATABASE_URL is provided, use it as-is. Otherwise, build the DSN
+	// from the individual DB_* variables.
+	cfg.DSN = getEnv("DATABASE_URL", fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName,
+	))
+
+	return cfg
 }
 
 // envPath returns the absolute path to the repo root's .env file, resolved

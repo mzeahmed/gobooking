@@ -79,7 +79,7 @@ update: ## Update dependencies
 # ==============================================================================
 # Database
 # ==============================================================================
-migrations: ## Create migrations | make migrations t="table_name"
+migrate-create: ## Create migrations | make migrate-create t="table_name"
 	@if [ $(t) ]; then \
   		echo "$(GREEN)Migrations building ... $(RESET)"; \
 		cd api && migrate create -ext sql -dir db/migrations -seq ${t}; \

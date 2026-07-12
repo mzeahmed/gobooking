@@ -3,7 +3,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -12,13 +11,7 @@ import (
 
 // New builds a connection pool from the given configuration.
 func New(ctx context.Context, cfg config.Config) (*pgxpool.Pool, error) {
-
-	dsn := fmt.Sprintf(
-		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName,
-	)
-
-	pool, err := pgxpool.New(ctx, dsn)
+	pool, err := pgxpool.New(ctx, cfg.DSN)
 	if err != nil {
 		return nil, err
 	}
