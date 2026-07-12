@@ -21,7 +21,7 @@ func New(pool *pgxpool.Pool, jwtSecret string) http.Handler {
 
 	health.New(jwtSecret).RegisterRoutes(mux)
 	auth.New(pool, jwtSecret).RegisterRoutes(mux)
-	user.New(pool).RegisterRoutes(mux)
+	user.New(pool).RegisterRoutes(mux, middleware.Authenticate(jwtSecret))
 
 	return middleware.Logging(mux)
 }

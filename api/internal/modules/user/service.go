@@ -18,6 +18,5 @@ func NewService(users *Repository) *Service {
 // DeleteUser removes the user identified by req, returning ErrNotFound
 // if no user matches the given ID.
 func (s *Service) DeleteUser(ctx context.Context, req DeleteRequest) error {
-
 	return s.users.Delete(ctx, req.ID)
 }

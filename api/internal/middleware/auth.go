@@ -7,20 +7,19 @@ import (
 	"strings"
 
 	"github.com/mzeahmed/gobooking/internal/modules/auth"
+	"github.com/mzeahmed/gobooking/internal/reqctx"
 	"github.com/mzeahmed/gobooking/internal/response"
 )
 
-// contextKey is an unexported type to avoid collisions with context keys
-// defined in other packages.
-type contextKey int
-
-const authUserContextKey contextKey = iota
-
 // AuthUser is the identity extracted from a validated access token.
-type AuthUser struct {
-	ID    int
-	Roles []string
-}
+//
+// It is a type alias for reqctx.AuthUser: reqctx exists as a separate,
+// dependency-free package so that domain packages (like
+// internal/modules/user) can read the authenticated caller's identity
+// directly, without importing this package and its internal/modules/auth
+// dependency, which would create an import cycle
+// (middleware -> auth -> user -> middleware).
+type AuthUser = reqctx.AuthUser
 
 // Authenticate returns a middleware that validates the
 // "Authorization: Bearer <token>" header on incoming requests. Requests
@@ -65,7 +64,7 @@ func Authenticate(jwtSecret string) func(http.Handler) http.Handler {
 				roles[i] = string(role)
 			}
 
-			ctx := context.WithValue(r.Context(), authUserContextKey, AuthUser{
+			ctx := reqctx.WithAuthUser(r.Context(), AuthUser{
 				ID:    userID,
 				Roles: roles,
 			})
@@ -96,8 +95,5 @@ func bearerToken(r *http.Request) (string, bool) {
 
 // UserFromContext returns the AuthUser attached by Authenticate, if any.
 func UserFromContext(ctx context.Context) (AuthUser, bool) {
-
-	u, ok := ctx.Value(authUserContextKey).(AuthUser)
-
-	return u, ok
+	return reqctx.AuthUserFromContext(ctx)
 }

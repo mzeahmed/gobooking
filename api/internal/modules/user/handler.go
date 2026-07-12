@@ -1,10 +1,10 @@
 package user
 
 import (
-	"encoding/json"
 	"errors"
 	"net/http"
 
+	"github.com/mzeahmed/gobooking/internal/reqctx"
 	"github.com/mzeahmed/gobooking/internal/response"
 )
 
@@ -15,24 +15,35 @@ type Handler struct {
 
 // NewHandler creates a new user handler.
 func NewHandler(service *Service) *Handler {
-
 	return &Handler{
 		service: service,
 	}
 }
 
-// Delete handles POST /users/delete.
+func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// Delete handles DELETE /users/delete.
+//
+// This route is guarded by middleware.Authenticate (see
+// Module.RegisterRoutes), so it only ever runs with a valid, authenticated
+// caller. The target user ID is taken from that authenticated identity,
+// not from the request body, so callers can only ever delete their own
+// account.
 func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
+	authUser, ok := reqctx.AuthUserFromContext(r.Context())
 
-	var req DeleteRequest
-
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		response.JSON(w, http.StatusBadRequest, map[string]string{
-			"error": "invalid request body",
+	if !ok {
+		// Should not happen behind Authenticate, but fail closed if it does.
+		response.JSON(w, http.StatusUnauthorized, map[string]string{
+			"error": "authentication required",
 		})
 
 		return
 	}
+
+	req := DeleteRequest{ID: authUser.ID}
 
 	if err := req.Validate(); err != nil {
 		response.JSON(w, http.StatusBadRequest, map[string]string{
