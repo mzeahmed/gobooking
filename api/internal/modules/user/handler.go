@@ -21,7 +21,7 @@ func NewHandler(service *Service) *Handler {
 	}
 }
 
-// Delete handles DELETE /users.
+// Delete handles POST /users/delete.
 func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	var req DeleteRequest
@@ -58,5 +58,7 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSON(w, http.StatusNoContent, nil)
+	response.JSON(w, http.StatusOK, map[string]string{
+		"message": "User deleted successfully",
+	})
 }

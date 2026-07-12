@@ -28,5 +28,5 @@ func New(pool *pgxpool.Pool) *Module {
 // RegisterRoutes registers the user module's routes on the given mux.
 func (m *Module) RegisterRoutes(mux *http.ServeMux) {
 
-	mux.HandleFunc("DELETE /users", m.handler.Delete)
+	mux.HandleFunc("DELETE /users/delete", m.handler.Delete)
 }
