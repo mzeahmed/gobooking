@@ -21,9 +21,9 @@ precedence: use `DATABASE_URL` if it is set, otherwise fall back to the
 `internal/db/db.go`).
 
 The root `.env` file defines `DATABASE_URL` pointing at `localhost`, because
-that variable is primarily meant for the `golang-migrate` CLI (`make
-migrate-up` / `make migrate-down`), which runs on the host machine, outside
-Docker.
+that variable is primarily meant for the `goose` CLI (`make
+migrate-up` / `make migrate-down`, via `GOOSE_DBSTRING`), which runs on the
+host machine, outside Docker.
 
 Config loading uses [`godotenv.Load`](https://github.com/joho/godotenv),
 which **never overrides a variable that is already set in the process
@@ -49,11 +49,11 @@ environment:
 ```
 
 This takes precedence over the `.env` value inside the container, while the
-`.env` file's `localhost` DSN remains correct for `migrate` invoked from the
+`.env` file's `localhost` DSN remains correct for `goose` invoked from the
 host.
 
 **If you hit this again**: check whether the value actually being used
-differs between "run via Docker" and "run via `migrate` / `go run` on the
+differs between "run via Docker" and "run via `goose` / `go run` on the
 host". Any variable that should differ between those two contexts needs to
 be set explicitly in `docker-compose.yml`'s `environment:` block for the
 `app` service, since container env vars always win over `.env`.

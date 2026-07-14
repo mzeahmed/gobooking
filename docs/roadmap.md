@@ -4,7 +4,7 @@
 
 * [x] Go module setup
 * [x] Docker Compose (PostgreSQL, Mailpit)
-* [x] golang-migrate setup
+* [x] goose setup
 * [ ] sqlc setup
 * [x] HTTP server bootstrap (net/http router, middleware, config loading)
 

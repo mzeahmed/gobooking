@@ -1,5 +1,5 @@
 // Package auth handles user registration and login, issuing JWT access
-// tokens on success. It builds on top of the user module's repository
+// tokens on success. It builds on top of the user module's service
 // rather than owning user persistence itself.
 package auth
 
@@ -17,12 +17,12 @@ type Module struct {
 	handler *Handler
 }
 
-// New builds an auth Module with its repository, service and handler
-// dependencies initialized.
+// New builds an auth Module with its service and handler dependencies
+// initialized.
 func New(pool *pgxpool.Pool, jwtSecret string) *Module {
 
-	repo := user.NewRepository(pool)
-	service := NewService(repo, jwtSecret)
+	userService := user.NewService(pool)
+	service := NewService(userService, jwtSecret)
 	handler := NewHandler(service)
 
 	return &Module{

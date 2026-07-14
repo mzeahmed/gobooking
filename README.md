@@ -45,7 +45,7 @@ and clean layering without pulling in a full framework.
 * Go 1.23+
 * `net/http` (stdlib) — HTTP router / middleware
 * [sqlc](https://sqlc.dev) — typed Go code generated from SQL, on top of `database/sql`
-* [golang-migrate](https://github.com/golang-migrate/migrate) — versioned SQL migrations
+* [goose](https://github.com/pressly/goose) — versioned SQL migrations
 * [pgx](https://github.com/jackc/pgx) — PostgreSQL driver
 
 ### Infrastructure
@@ -121,7 +121,7 @@ Symfony project without `/etc/hosts` or port collisions.
 * Docker Compose
 * GNU Make
 * [mkcert](https://github.com/FiloSottile/mkcert)
-* [golang-migrate CLI](https://github.com/golang-migrate/migrate#cli-usage) (optional, for manual migration runs)
+* [goose CLI](https://github.com/pressly/goose#install) (optional, for manual migration runs)
 * [sqlc CLI](https://docs.sqlc.dev/en/latest/overview/install.html)
 
 ---
@@ -244,7 +244,7 @@ golangci-lint run
 ### Create a New Migration
 
 ```bash
-migrate create -ext sql -dir api/db/migrations -seq <migration_name>
+make migrate-create t="<migration_name>"
 ```
 
 ### Create a New Feature
@@ -289,7 +289,7 @@ gobooking/
 │   │   └── db/                      # sqlc-generated code
 │   │
 │   ├── db/
-│   │   ├── migrations/          # golang-migrate SQL migrations
+│   │   ├── migrations/          # goose SQL migrations
 │   │   └── queries/                # sqlc SQL query definitions
 │   │
 │   ├── sqlc.yaml

@@ -208,6 +208,6 @@ at the DB level, which the current MariaDB/Doctrine schema does not do).
 
 ## Migrations
 
-Schema changes are managed with [golang-migrate](https://github.com/golang-migrate/migrate)
-SQL migration files under `db/migrations/`, one pair of `.up.sql` /
-`.down.sql` files per change — no ORM-managed auto-migrations.
+Schema changes are managed with [goose](https://github.com/pressly/goose)
+SQL migration files under `internal/adapters/postgresql/migrations/`, one file per change, with
+`-- +goose Up` / `-- +goose Down` sections — no ORM-managed auto-migrations.

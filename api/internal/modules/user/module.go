@@ -12,12 +12,11 @@ type Module struct {
 	handler *Handler
 }
 
-// New builds a user Module with its repository, service and handler
-// dependencies initialized.
+// New builds a user Module with its service and handler dependencies
+// initialized.
 func New(pool *pgxpool.Pool) *Module {
 
-	repo := NewRepository(pool)
-	service := NewService(repo)
+	service := NewService(pool)
 	handler := NewHandler(service)
 
 	return &Module{
@@ -31,7 +30,7 @@ func New(pool *pgxpool.Pool) *Module {
 // (see router.New) is expected to pass middleware.Authenticate(jwtSecret).
 // It is injected rather than constructed here because
 // internal/middleware depends on internal/modules/auth, which itself
-// depends on this package (user.Repository, user.User) — importing
+// depends on this package (user.Service, user.User) — importing
 // middleware directly from this package would create an import cycle
 // (middleware -> auth -> user -> middleware).
 func (m *Module) RegisterRoutes(mux *http.ServeMux, authenticate func(http.Handler) http.Handler) {

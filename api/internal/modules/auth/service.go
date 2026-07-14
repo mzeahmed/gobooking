@@ -11,12 +11,12 @@ import (
 
 // Service contains the business logic of the auth module.
 type Service struct {
-	users     *user.Repository
+	users     *user.Service
 	jwtSecret string
 }
 
 // NewService creates a new auth service.
-func NewService(users *user.Repository, jwtSecret string) *Service {
+func NewService(users *user.Service, jwtSecret string) *Service {
 
 	return &Service{
 		users:     users,
