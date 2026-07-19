@@ -9,6 +9,7 @@ import (
 )
 
 type Querier interface {
+	AddRoleToUser(ctx context.Context, arg AddRoleToUserParams) error
 	AssignDefaultRole(ctx context.Context, arg AssignDefaultRoleParams) error
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	DeleteUser(ctx context.Context, id int32) (int64, error)

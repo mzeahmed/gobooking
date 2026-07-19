@@ -25,7 +25,6 @@ type Service struct {
 
 // NewService creates a new user service backed by the given pool.
 func NewService(pool *pgxpool.Pool) *Service {
-
 	return &Service{
 		pool:    pool,
 		queries: repo.New(pool),
@@ -132,6 +131,19 @@ func (s *Service) ListUsers(ctx context.Context) ([]User, error) {
 	}
 
 	return users, nil
+}
+
+func (s *Service) AddRoleToUser(ctx context.Context, u User, role Role) error {
+	add := s.queries.AddRoleToUser(ctx, repo.AddRoleToUserParams{
+		UserID: int32(u.ID),
+		Name:   string(role),
+	})
+
+	if add != nil {
+		return add
+	}
+
+	return nil
 }
 
 // DeleteUser removes the user identified by req, returning ErrNotFound

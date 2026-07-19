@@ -1,6 +1,6 @@
 # Gobooking
 
-[![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go&logoColor=white)](go.mod)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/mzeahmed/gobooking?filename=api%2Fgo.mod)](api/go.mod)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)

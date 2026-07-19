@@ -56,7 +56,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res := make([]UserResponse, len(users))
+	res := make([]Response, len(users))
 	for i, u := range users {
 		res[i] = newUserResponse(u)
 	}

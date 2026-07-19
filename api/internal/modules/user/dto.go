@@ -24,9 +24,9 @@ func (r DeleteRequest) Validate() error {
 	return nil
 }
 
-// UserResponse is the public representation of a user, safe to return in
+// Response is the public representation of a user, safe to return in
 // HTTP responses: notably, it excludes the password hash.
-type UserResponse struct {
+type Response struct {
 	ID        int      `json:"id"`
 	Email     string   `json:"email"`
 	FirstName string   `json:"first_name"`
@@ -35,14 +35,14 @@ type UserResponse struct {
 }
 
 // newUserResponse converts a User to its public representation.
-func newUserResponse(u User) UserResponse {
+func newUserResponse(u User) Response {
 
 	roles := make([]string, len(u.Roles))
 	for i, role := range u.Roles {
 		roles[i] = string(role)
 	}
 
-	return UserResponse{
+	return Response{
 		ID:        u.ID,
 		Email:     u.Email,
 		FirstName: u.FirstName,

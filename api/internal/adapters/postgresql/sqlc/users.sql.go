@@ -11,6 +11,23 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const addRoleToUser = `-- name: AddRoleToUser :exec
+INSERT INTO user_roles (user_id, role_id)
+SELECT $1, id
+FROM roles
+WHERE name = $2
+`
+
+type AddRoleToUserParams struct {
+	UserID int32  `json:"user_id"`
+	Name   string `json:"name"`
+}
+
+func (q *Queries) AddRoleToUser(ctx context.Context, arg AddRoleToUserParams) error {
+	_, err := q.db.Exec(ctx, addRoleToUser, arg.UserID, arg.Name)
+	return err
+}
+
 const assignDefaultRole = `-- name: AssignDefaultRole :exec
 INSERT INTO user_roles (user_id, role_id)
 SELECT $1, id

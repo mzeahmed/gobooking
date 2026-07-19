@@ -37,3 +37,9 @@ ORDER BY u.id;
 DELETE
 FROM users
 WHERE id = $1;
+
+-- name: AddRoleToUser :exec
+INSERT INTO user_roles (user_id, role_id)
+SELECT $1, id
+FROM roles
+WHERE name = $2;
